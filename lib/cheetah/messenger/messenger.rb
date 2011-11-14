@@ -47,19 +47,7 @@ module Cheetah
       http.read_timeout = 5
       http.use_ssl      = true
       http.verify_mode  = OpenSSL::SSL::VERIFY_PEER
-      http.ssl_hostname_verify = lambda do |peer_cert, hostname|
-        if OpenSSL::SSL.verify_certificate_identity(peer_cert, hostname)
-          return true
-        end
-        peer_cert.subject.to_a.each{|oid, value|
-          puts "#{oid}    #{value}"
-          if oid == "CN" && value == "*.cheetahmail.com" &&
-              hostname == "cheetahmail.com"
-            return true
-          end
-        }
-        raise OpenSSL::SSL::SSLError, "hostname was not match with the server certificate"
-      end
+      
       data              = params.to_a.map { |a| "#{a[0]}=#{a[1]}" }.join("&")
       resp              = http.post(path, data, initheader)
 
